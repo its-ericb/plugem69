@@ -310,7 +310,8 @@ export default class Dapp extends React.Component<Props, State> {
       networkConfig,
     });
 
-    if (await this.provider.getCode(CollectionConfig.contractAddress!) === '0x') {
+    if (await this.provider.getCode(CollectionConfig.contractAddress! && CollectionConfig.contractAddressTestnet!) === '0x') {
+    // if (await this.provider.getCode(CollectionConfig.contractAddress!) === '0x') {
       this.setError('Could not find the contract, are you connected to the right chain?');
 
       return;

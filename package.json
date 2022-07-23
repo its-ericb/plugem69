@@ -36,6 +36,11 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress",
-        "bdev": "encore production --progress && encore dev"
+        "bdev": "encore production --progress && encore dev-server",
+        "flatten": "truffle-flattener src/contracts/PLUGEM.sol > src/contracts/PLUGEM_flat.sol"
+    },
+    "dependencies": {
+        "@openzeppelin/contracts": "^4.7.1",
+        "truffle-flattener": "^1.6.0"
     }
 }
