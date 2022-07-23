@@ -7,9 +7,10 @@ import CollectionConfig from '../../config/CollectionConfig';
 import NetworkConfigInterface from '../../lib/NetworkConfigInterface';
 import CollectionStatus from './CollectionStatus';
 import MintWidget from './MintWidget';
-import Whitelist from '../../config/whitelist.json';
+// import Whitelist from '../../config/whitelist.json';
 
-const ContractAbi = require('../../config/ContractABI.json' + CollectionConfig.contractName + '.sol/' + CollectionConfig.contractName + '.json').abi;
+// const ContractAbi = require('../../config/ContractABI.json' + CollectionConfig.contractName + '.sol/' + CollectionConfig.contractName + '.json').abi;
+const ContractAbi = require('../../config/CollectionABI.json')
 
 interface Props {
 }
@@ -109,10 +110,10 @@ export default class Dapp extends React.Component<Props, State> {
     return this.contract !== undefined;
   }
 
-  private isSoldOut(): boolean
-  {
-    return this.state.maxSupply !== 0 && this.state.totalSupply < this.state.maxSupply;
-  }
+  // private isSoldOut(): boolean
+  // {
+  //   return this.state.maxSupply !== 0 && this.state.totalSupply < this.state.maxSupply;
+  // }
 
   private isNotMainnet(): boolean
   {
@@ -200,7 +201,7 @@ export default class Dapp extends React.Component<Props, State> {
           </>
         : null}
 
-        {!this.isWalletConnected() || !this.isSoldOut() ?
+          {/* {!this.isWalletConnected() || !this.isSoldOut() ?
           <div className="no-wallet">
             {!this.isWalletConnected() ? <button className="primary" disabled={this.provider === undefined} onClick={() => this.connectWallet()}>Connect Wallet</button> : null}
             
@@ -211,7 +212,7 @@ export default class Dapp extends React.Component<Props, State> {
               Keep safe! <span className="emoji">❤️</span>
             </div>
 
-            {/* {!this.isWalletConnected() || this.state.isWhitelistMintEnabled ?
+          {!this.isWalletConnected() || this.state.isWhitelistMintEnabled ?
               <div className="merkle-proof-manual-address">
                 <h2>Whitelist Proof</h2>
                 <p>
@@ -224,9 +225,10 @@ export default class Dapp extends React.Component<Props, State> {
                 <input id="merkle-proof-manual-address" type="text" placeholder="0x000..." disabled={this.state.userAddress !== null} value={this.state.userAddress ?? this.state.merkleProofManualAddress} ref={(input) => this.merkleProofManualAddressInput = input!} onChange={() => {this.setState({merkleProofManualAddress: this.merkleProofManualAddressInput.value})}} /> 
                 <button onClick={() => this.copyMerkleProofToClipboard()}>Generate and copy to clipboard</button>
               </div>
-              : null} */}
+              : null}
           </div>
-          : null}
+          : null  
+          } */}
       </>
     );
   }
