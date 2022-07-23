@@ -3,13 +3,13 @@ import { ethers, BigNumber } from 'ethers'
 import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
 import detectEthereumProvider from '@metamask/detect-provider';
 import NftContractType from '../lib/NftContractType';
-import CollectionConfig from '../../../../smart-contract/config/CollectionConfig';
-import NetworkConfigInterface from '../../../../smart-contract/lib/NetworkConfigInterface';
+import CollectionConfig from '../../config/CollectionConfig';
+import NetworkConfigInterface from '../../lib/NetworkConfigInterface';
 import CollectionStatus from './CollectionStatus';
 import MintWidget from './MintWidget';
 import Whitelist from '../lib/Whitelist';
 
-const ContractAbi = require('../../../../smart-contract/artifacts/contracts/' + CollectionConfig.contractName + '.sol/' + CollectionConfig.contractName + '.json').abi;
+const ContractAbi = require('../../config/CollectionABI.json')
 
 interface Props {
 }
@@ -104,10 +104,10 @@ export default class Dapp extends React.Component<Props, State> {
     return this.state.userAddress !== null;
   }
 
-  private isContractReady(): boolean
-  {
-    return this.contract !== undefined;
-  }
+  // private isContractReady(): boolean
+  // {
+  //   return this.contract !== undefined;
+  // }
 
   private isSoldOut(): boolean
   {
@@ -156,7 +156,7 @@ export default class Dapp extends React.Component<Props, State> {
         
         {this.isWalletConnected() ?
           <>
-            {this.isContractReady() ?
+            {/* {this.isContractReady() ? */}
               <>
                 <CollectionStatus
                   userAddress={this.state.userAddress}
@@ -187,7 +187,7 @@ export default class Dapp extends React.Component<Props, State> {
                   </div>
                 }
               </>
-              :
+              {/* :
               <div className="collection-not-ready">
                 <svg className="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -195,12 +195,14 @@ export default class Dapp extends React.Component<Props, State> {
                 </svg>
 
                 Loading collection data...
-              </div>
-            }
+              </div> */}
+            {/* } */}
           </>
         : null}
+        
+        {!this.isWalletConnected() ? <button className="primary" disabled={this.provider === undefined} onClick={() => this.connectWallet()}>Connect Wallet</button> : null}
 
-        {!this.isWalletConnected() || !this.isSoldOut() ?
+          {/* {!this.isWalletConnected() || !this.isSoldOut() ?
           <div className="no-wallet">
             {!this.isWalletConnected() ? <button className="primary" disabled={this.provider === undefined} onClick={() => this.connectWallet()}>Connect Wallet</button> : null}
             
@@ -211,7 +213,7 @@ export default class Dapp extends React.Component<Props, State> {
               Keep safe! <span className="emoji">❤️</span>
             </div>
 
-            {!this.isWalletConnected() || this.state.isWhitelistMintEnabled ?
+          {!this.isWalletConnected() || this.state.isWhitelistMintEnabled ?
               <div className="merkle-proof-manual-address">
                 <h2>Whitelist Proof</h2>
                 <p>
@@ -221,11 +223,13 @@ export default class Dapp extends React.Component<Props, State> {
                 {this.state.merkleProofManualAddressFeedbackMessage ? <div className="feedback-message">{this.state.merkleProofManualAddressFeedbackMessage}</div> : null}
 
                 <label htmlFor="merkle-proof-manual-address">Public address:</label>
-                <input id="merkle-proof-manual-address" type="text" placeholder="0x000..." disabled={this.state.userAddress !== null} value={this.state.userAddress ?? this.state.merkleProofManualAddress} ref={(input) => this.merkleProofManualAddressInput = input!} onChange={() => {this.setState({merkleProofManualAddress: this.merkleProofManualAddressInput.value})}} /> <button onClick={() => this.copyMerkleProofToClipboard()}>Generate and copy to clipboard</button>
+                <input id="merkle-proof-manual-address" type="text" placeholder="0x000..." disabled={this.state.userAddress !== null} value={this.state.userAddress ?? this.state.merkleProofManualAddress} ref={(input) => this.merkleProofManualAddressInput = input!} onChange={() => {this.setState({merkleProofManualAddress: this.merkleProofManualAddressInput.value})}} /> 
+                <button onClick={() => this.copyMerkleProofToClipboard()}>Generate and copy to clipboard</button>
               </div>
               : null}
           </div>
-          : null}
+          : null  
+          } */}
       </>
     );
   }
@@ -313,7 +317,11 @@ export default class Dapp extends React.Component<Props, State> {
     }
 
     this.contract = new ethers.Contract(
-      CollectionConfig.contractAddress!,
+      network.chainId == CollectionConfig.mainnet.chainId 
+        ? CollectionConfig.contractAddress!
+        : network.chainId == CollectionConfig.testnet.chainId 
+        ? CollectionConfig.contractAddressTestnet!
+        : '',
       ContractAbi,
       this.provider.getSigner(),
     ) as NftContractType;
