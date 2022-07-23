@@ -9,7 +9,6 @@ import CollectionStatus from './CollectionStatus';
 import MintWidget from './MintWidget';
 import Whitelist from '../lib/Whitelist';
 
-// const ContractAbi = require('../../config/ContractABI.json' + CollectionConfig.contractName + '.sol/' + CollectionConfig.contractName + '.json').abi;
 const ContractAbi = require('../../config/CollectionABI.json')
 
 interface Props {
@@ -320,7 +319,7 @@ export default class Dapp extends React.Component<Props, State> {
     this.contract = new ethers.Contract(
       network.chainId == CollectionConfig.mainnet.chainId 
         ? CollectionConfig.contractAddress!
-        : network.chainId == CollectionConfig.mainnet.chainId 
+        : network.chainId == CollectionConfig.testnet.chainId 
         ? CollectionConfig.contractAddressTestnet!
         : '',
       ContractAbi,
