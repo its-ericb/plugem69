@@ -15,8 +15,8 @@ interface Props {
 }
 
 interface State {
-  userAddress: string|null;
-  network: ethers.providers.Network|null;
+  userAddress: string | null;
+  network: ethers.providers.Network | null;
   networkConfig: NetworkConfigInterface;
   totalSupply: number;
   maxSupply: number;
@@ -26,8 +26,8 @@ interface State {
   isWhitelistMintEnabled: boolean;
   isUserInWhitelist: boolean;
   merkleProofManualAddress: string;
-  merkleProofManualAddressFeedbackMessage: string|JSX.Element|null;
-  errorMessage: string|JSX.Element|null;
+  merkleProofManualAddressFeedbackMessage: string | JSX.Element | null;
+  errorMessage: string | JSX.Element | null;
 }
 
 const defaultState: State = {
@@ -63,13 +63,13 @@ export default class Dapp extends React.Component<Props, State> {
     const browserProvider = await detectEthereumProvider() as ExternalProvider;
 
     if (browserProvider?.isMetaMask !== true) {
-      this.setError( 
+      this.setError(
         <>
           We were not able to detect <strong>MetaMask</strong>. We value <strong>privacy and security</strong> a lot so we limit the wallet options on the DAPP.<br />
           <br />
           But don't worry! <span className="emoji">😃</span> You can always interact with the smart-contract through <a href={this.generateContractUrl()} target="_blank">{this.state.networkConfig.blockExplorer.name}</a> and <strong>we do our best to provide you with the best user experience possible</strong>, even from there.<br />
-          <br />
-          You can also get your <strong>Whitelist Proof</strong> manually, using the tool below.
+          {/* <br />
+          You can also get your <strong>Whitelist Proof</strong> manually, using the tool below. */}
         </>,
       );
     }
@@ -81,26 +81,23 @@ export default class Dapp extends React.Component<Props, State> {
     await this.initWallet();
   }
 
-  async mintTokens(amount: number): Promise<void>
-  {
+  async mintTokens(amount: number): Promise<void> {
     try {
-      await this.contract.mint(amount, {value: this.state.tokenPrice.mul(amount)});
+      await this.contract.mint(amount, { value: this.state.tokenPrice.mul(amount) });
     } catch (e) {
       this.setError(e);
     }
   }
 
-  async whitelistMintTokens(amount: number): Promise<void>
-  {
+  async whitelistMintTokens(amount: number): Promise<void> {
     try {
-      await this.contract.whitelistMint(amount, Whitelist.getProofForAddress(this.state.userAddress!), {value: this.state.tokenPrice.mul(amount)});
+      await this.contract.whitelistMint(amount, Whitelist.getProofForAddress(this.state.userAddress!), { value: this.state.tokenPrice.mul(amount) });
     } catch (e) {
       this.setError(e);
     }
   }
 
-  private isWalletConnected(): boolean
-  {
+  private isWalletConnected(): boolean {
     return this.state.userAddress !== null;
   }
 
@@ -109,18 +106,15 @@ export default class Dapp extends React.Component<Props, State> {
   //   return this.contract !== undefined;
   // }
 
-  private isSoldOut(): boolean
-  {
+  private isSoldOut(): boolean {
     return this.state.maxSupply !== 0 && this.state.totalSupply < this.state.maxSupply;
   }
 
-  private isNotMainnet(): boolean
-  {
+  private isNotMainnet(): boolean {
     return this.state.network !== null && this.state.network.chainId !== CollectionConfig.mainnet.chainId;
   }
 
-  private copyMerkleProofToClipboard(): void
-  {
+  private copyMerkleProofToClipboard(): void {
     const merkleProof = Whitelist.getRawProofForAddress(this.state.userAddress ?? this.state.merkleProofManualAddress);
 
     if (merkleProof.length < 1) {
@@ -134,11 +128,11 @@ export default class Dapp extends React.Component<Props, State> {
     navigator.clipboard.writeText(merkleProof);
 
     this.setState({
-      merkleProofManualAddressFeedbackMessage: 
-      <>
-        <strong>Congratulations!</strong> <span className="emoji">🎉</span><br />
-        Your Merkle Proof <strong>has been copied to the clipboard</strong>. You can paste it into <a href={this.generateContractUrl()} target="_blank">{this.state.networkConfig.blockExplorer.name}</a> to claim your tokens.
-      </>,
+      merkleProofManualAddressFeedbackMessage:
+        <>
+          <strong>Congratulations!</strong> <span className="emoji">🎉</span><br />
+          Your Merkle Proof <strong>has been copied to the clipboard</strong>. You can paste it into <a href={this.generateContractUrl()} target="_blank">{this.state.networkConfig.blockExplorer.name}</a> to claim your tokens.
+        </>,
     });
   }
 
@@ -151,43 +145,48 @@ export default class Dapp extends React.Component<Props, State> {
             <span className="small">Current network: <strong>{this.state.network?.name}</strong></span>
           </div>
           : null}
+        {this.state.errorMessage 
+        ? <div className="error">
+            {/* <button onClick={() => this.setError()}>x</button> */}
+          <div className="text-center text-sm">{this.state.errorMessage}</div>
+        </div>
+        : null}
 
-        {this.state.errorMessage ? <div className="error"><p>{this.state.errorMessage}</p><button onClick={() => this.setError()}>Close</button></div> : null}
-        
+
         {this.isWalletConnected() ?
           <>
             {/* {this.isContractReady() ? */}
-              <>
-                <CollectionStatus
-                  userAddress={this.state.userAddress}
+            <>
+              <CollectionStatus
+                userAddress={this.state.userAddress}
+                maxSupply={this.state.maxSupply}
+                totalSupply={this.state.totalSupply}
+                isPaused={this.state.isPaused}
+                isWhitelistMintEnabled={this.state.isWhitelistMintEnabled}
+                isUserInWhitelist={this.state.isUserInWhitelist}
+              />
+              {this.state.totalSupply < this.state.maxSupply ?
+                <MintWidget
+                  networkConfig={this.state.networkConfig}
                   maxSupply={this.state.maxSupply}
                   totalSupply={this.state.totalSupply}
+                  tokenPrice={this.state.tokenPrice}
+                  maxMintAmountPerTx={this.state.maxMintAmountPerTx}
                   isPaused={this.state.isPaused}
                   isWhitelistMintEnabled={this.state.isWhitelistMintEnabled}
                   isUserInWhitelist={this.state.isUserInWhitelist}
+                  mintTokens={(mintAmount) => this.mintTokens(mintAmount)}
+                  whitelistMintTokens={(mintAmount) => this.whitelistMintTokens(mintAmount)}
                 />
-                {this.state.totalSupply < this.state.maxSupply ?
-                  <MintWidget
-                    networkConfig={this.state.networkConfig}
-                    maxSupply={this.state.maxSupply}
-                    totalSupply={this.state.totalSupply}
-                    tokenPrice={this.state.tokenPrice}
-                    maxMintAmountPerTx={this.state.maxMintAmountPerTx}
-                    isPaused={this.state.isPaused}
-                    isWhitelistMintEnabled={this.state.isWhitelistMintEnabled}
-                    isUserInWhitelist={this.state.isUserInWhitelist}
-                    mintTokens={(mintAmount) => this.mintTokens(mintAmount)}
-                    whitelistMintTokens={(mintAmount) => this.whitelistMintTokens(mintAmount)}
-                  />
-                  :
-                  <div className="collection-sold-out">
-                    <h2>Tokens have been <strong>sold out</strong>! <span className="emoji">🥳</span></h2>
+                :
+                <div className="collection-sold-out">
+                  <h2>Tokens have been <strong>sold out</strong>! <span className="emoji">🥳</span></h2>
 
-                    You can buy from our beloved holders on <a href={this.generateMarketplaceUrl()} target="_blank">{CollectionConfig.marketplaceConfig.name}</a>.
-                  </div>
-                }
-              </>
-              {/* :
+                  You can buy from our beloved holders on <a href={this.generateMarketplaceUrl()} target="_blank">{CollectionConfig.marketplaceConfig.name}</a>.
+                </div>
+              }
+            </>
+            {/* :
               <div className="collection-not-ready">
                 <svg className="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -198,11 +197,11 @@ export default class Dapp extends React.Component<Props, State> {
               </div> */}
             {/* } */}
           </>
-        : null}
-        
+          : null}
+
         {!this.isWalletConnected() ? <button className="primary" disabled={this.provider === undefined} onClick={() => this.connectWallet()}>Connect Wallet</button> : null}
 
-          {/* {!this.isWalletConnected() || !this.isSoldOut() ?
+        {/* {!this.isWalletConnected() || !this.isSoldOut() ?
           <div className="no-wallet">
             {!this.isWalletConnected() ? <button className="primary" disabled={this.provider === undefined} onClick={() => this.connectWallet()}>Connect Wallet</button> : null}
             
@@ -234,8 +233,7 @@ export default class Dapp extends React.Component<Props, State> {
     );
   }
 
-  private setError(error: any = null): void
-  {
+  private setError(error: any = null): void {
     let errorMessage = 'Unknown error...';
 
     if (null === error || typeof error === 'string') {
@@ -249,8 +247,8 @@ export default class Dapp extends React.Component<Props, State> {
       } else if (error?.message !== undefined) {
         errorMessage = error.message;
       } else if (React.isValidElement(error)) {
-        this.setState({errorMessage: error});
-  
+        this.setState({ errorMessage: error });
+
         return;
       }
     }
@@ -260,18 +258,15 @@ export default class Dapp extends React.Component<Props, State> {
     });
   }
 
-  private generateContractUrl(): string
-  {
+  private generateContractUrl(): string {
     return this.state.networkConfig.blockExplorer.generateContractUrl(CollectionConfig.contractAddress!);
   }
 
-  private generateMarketplaceUrl(): string
-  {
+  private generateMarketplaceUrl(): string {
     return CollectionConfig.marketplaceConfig.generateCollectionUrl(CollectionConfig.marketplaceIdentifier, !this.isNotMainnet());
   }
 
-  private async connectWallet(): Promise<void>
-  {
+  private async connectWallet(): Promise<void> {
     try {
       await this.provider.provider.request!({ method: 'eth_requestAccounts' });
 
@@ -281,10 +276,9 @@ export default class Dapp extends React.Component<Props, State> {
     }
   }
 
-  private async initWallet(): Promise<void>
-  {
+  private async initWallet(): Promise<void> {
     const walletAccounts = await this.provider.listAccounts();
-    
+
     this.setState(defaultState);
 
     if (walletAccounts.length === 0) {
@@ -299,11 +293,11 @@ export default class Dapp extends React.Component<Props, State> {
     } else if (network.chainId === CollectionConfig.testnet.chainId) {
       networkConfig = CollectionConfig.testnet;
     } else {
-      this.setError('Unsupported network!');
+      this.setError('Connect to Ethereum Mainnet.');
 
       return;
     }
-    
+
     this.setState({
       userAddress: walletAccounts[0],
       network,
@@ -317,11 +311,11 @@ export default class Dapp extends React.Component<Props, State> {
     }
 
     this.contract = new ethers.Contract(
-      network.chainId == CollectionConfig.mainnet.chainId 
+      network.chainId == CollectionConfig.mainnet.chainId
         ? CollectionConfig.contractAddress!
-        : network.chainId == CollectionConfig.testnet.chainId 
-        ? CollectionConfig.contractAddressTestnet!
-        : '',
+        : network.chainId == CollectionConfig.testnet.chainId
+          ? CollectionConfig.contractAddressTestnet!
+          : '',
       ContractAbi,
       this.provider.getSigner(),
     ) as NftContractType;
@@ -337,8 +331,7 @@ export default class Dapp extends React.Component<Props, State> {
     });
   }
 
-  private registerWalletEvents(browserProvider: ExternalProvider): void
-  {
+  private registerWalletEvents(browserProvider: ExternalProvider): void {
     // @ts-ignore
     browserProvider.on('accountsChanged', () => {
       this.initWallet();
