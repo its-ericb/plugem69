@@ -24,11 +24,21 @@ export const ethereumTestnet: NetworkConfigInterface = {
   },
 }
 
+// export const ethereumMainnet: NetworkConfigInterface = {
+//   chainId: 1,
+//   symbol: 'ETH',
+//   blockExplorer: {
+//     name: 'Etherscan',
+//     generateContractUrl: (contractAddress: string) => `https://etherscan.io/address/${contractAddress}`,
+//   },
+// }
+
 export const ethereumMainnet: NetworkConfigInterface = {
-  chainId: 1,
-  symbol: 'ETH',
+  chainId: 250,
+  symbol: 'FTM  ',
   blockExplorer: {
     name: 'Etherscan',
     generateContractUrl: (contractAddress: string) => `https://etherscan.io/address/${contractAddress}`,
   },
 }
+
