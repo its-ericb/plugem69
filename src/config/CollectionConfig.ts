@@ -28,7 +28,7 @@ const CollectionConfig: CollectionConfigInterface = {
   },
   contractAddress: "0x0b52c66a339dd33324cac0f3c473d95e30498008",
   marketplaceIdentifier: 'PLUGEM',
-  marketplaceConfig: Marketplaces.openSea,
+  marketplaceConfig: Marketplaces.openSea, // soon Enjoyooor.com
   whitelistAddresses,
 };
 
