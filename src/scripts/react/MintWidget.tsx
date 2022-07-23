@@ -70,14 +70,14 @@ export default class MintWidget extends React.Component<Props, State> {
             </div>
 
             <div className="price">
-              <strong>Total price:</strong> {utils.formatEther(this.props.tokenPrice.mul(this.state.mintAmount))} {this.props.networkConfig.symbol}
+              <strong>Price:</strong> {utils.formatEther(this.props.tokenPrice.mul(this.state.mintAmount))} {this.props.networkConfig.symbol}
             </div>
 
             <div className="controls">
-              <button className="decrease" onClick={() => this.decrementMintAmount()}>-</button>
-              <span className="mint-amount">{this.state.mintAmount}</span>
-              <button className="increase" onClick={() => this.incrementMintAmount()}>+</button>
-              <button className="primary" onClick={() => this.mint()}>Mint</button>
+              {/* <button className="decrease" onClick={() => this.decrementMintAmount()}>-</button> */}
+              {/* <span className="mint-amount">{this.state.mintAmount}</span> */}
+              {/* <button className="increase" onClick={() => this.incrementMintAmount()}>+</button> */}
+              <button className="w-full primary" onClick={() => this.mint()}>Mint</button>
             </div>
           </div>
           :
@@ -85,7 +85,7 @@ export default class MintWidget extends React.Component<Props, State> {
             <span className="emoji">⏳</span>
             
             {this.props.isWhitelistMintEnabled ? <>You are not included in the <strong>whitelist</strong>.</> : <>The contract is <strong>paused</strong>.</>}<br />
-            Please come back during the next sale!
+            Please stay tuned for updates on <a href="https://discord.gg/HNHBfCuqYH" target="_blank"> Discord</a>.
           </div>
         }
       </>

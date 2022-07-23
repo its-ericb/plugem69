@@ -52,7 +52,7 @@ span.emoji {
   @apply shadow;
 
   &::before {
-    content: 'Error';
+    // content: 'Error';
 
     @apply font-semibold;
     @apply text-base;

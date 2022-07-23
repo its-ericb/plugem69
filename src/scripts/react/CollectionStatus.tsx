@@ -32,7 +32,7 @@ export default class CollectionStatus extends React.Component<Props, State> {
       <>
         <div className="collection-status">
           <div className="user-address">
-            <span className="label">Wallet Address:</span>
+            {/* <span className="label">Wallet:</span> */}
             <span className="address">{this.props.userAddress}</span>
           </div>
           
@@ -42,7 +42,7 @@ export default class CollectionStatus extends React.Component<Props, State> {
           </div>
 
           <div className="current-sale">
-            <span className="label">Sale Status</span>
+            <span className="label">Status</span>
             {this.isSaleOpen() ?
               <>
                 {this.props.isWhitelistMintEnabled ? 'Whitelist Only' : 'Open'}
