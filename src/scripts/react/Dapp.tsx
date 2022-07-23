@@ -318,7 +318,11 @@ export default class Dapp extends React.Component<Props, State> {
     }
 
     this.contract = new ethers.Contract(
-      CollectionConfig.contractAddress!,
+      network.chainId == CollectionConfig.mainnet.chainId 
+        ? CollectionConfig.contractAddress!
+        : network.chainId == CollectionConfig.mainnet.chainId 
+        ? CollectionConfig.contractAddressTestnet!
+        : '',
       ContractAbi,
       this.provider.getSigner(),
     ) as NftContractType;
@@ -330,7 +334,7 @@ export default class Dapp extends React.Component<Props, State> {
       tokenPrice: await this.contract.cost(),
       isPaused: await this.contract.paused(),
       isWhitelistMintEnabled: await this.contract.whitelistMintEnabled(),
-      // isUserInWhitelist: Whitelist.contains(this.state.userAddress ?? ''),
+      isUserInWhitelist: Whitelist.contains(this.state.userAddress ?? ''),
     });
   }
 
