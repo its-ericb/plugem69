@@ -1,6 +1,6 @@
 import { utils, BigNumber } from 'ethers';
 import React from 'react';
-import NetworkConfigInterface from '../../../../smart-contract/lib/NetworkConfigInterface';
+import NetworkConfigInterface from '../../lib/NetworkConfigInterface';
 
 interface Props {
   networkConfig: NetworkConfigInterface;
@@ -12,7 +12,7 @@ interface Props {
   isWhitelistMintEnabled: boolean;
   isUserInWhitelist: boolean;
   mintTokens(mintAmount: number): Promise<void>;
-  whitelistMintTokens(mintAmount: number): Promise<void>;
+  // whitelistMintTokens(mintAmount: number): Promise<void>;
 }
 
 interface State {
@@ -57,7 +57,7 @@ export default class MintWidget extends React.Component<Props, State> {
       return;
     }
 
-    await this.props.whitelistMintTokens(this.state.mintAmount);
+    // await this.props.whitelistMintTokens(this.state.mintAmount);
   }
 
   render() {
