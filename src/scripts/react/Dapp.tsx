@@ -104,10 +104,10 @@ export default class Dapp extends React.Component<Props, State> {
     return this.state.userAddress !== null;
   }
 
-  private isContractReady(): boolean
-  {
-    return this.contract !== undefined;
-  }
+  // private isContractReady(): boolean
+  // {
+  //   return this.contract !== undefined;
+  // }
 
   private isSoldOut(): boolean
   {
@@ -156,7 +156,7 @@ export default class Dapp extends React.Component<Props, State> {
         
         {this.isWalletConnected() ?
           <>
-            {this.isContractReady() ?
+            {/* {this.isContractReady() ? */}
               <>
                 <CollectionStatus
                   userAddress={this.state.userAddress}
@@ -187,7 +187,7 @@ export default class Dapp extends React.Component<Props, State> {
                   </div>
                 }
               </>
-              :
+              {/* :
               <div className="collection-not-ready">
                 <svg className="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -195,8 +195,8 @@ export default class Dapp extends React.Component<Props, State> {
                 </svg>
 
                 Loading collection data...
-              </div>
-            }
+              </div> */}
+            {/* } */}
           </>
         : null}
         
@@ -310,8 +310,7 @@ export default class Dapp extends React.Component<Props, State> {
       networkConfig,
     });
 
-    if (await this.provider.getCode(CollectionConfig.contractAddress! && CollectionConfig.contractAddressTestnet!) === '0x') {
-    // if (await this.provider.getCode(CollectionConfig.contractAddress!) === '0x') {
+    if (await this.provider.getCode(CollectionConfig.contractAddress!) === '0x') {
       this.setError('Could not find the contract, are you connected to the right chain?');
 
       return;
